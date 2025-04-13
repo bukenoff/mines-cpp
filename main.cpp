@@ -61,16 +61,18 @@ public:
 
 class Minesweeper {
   vector<vector<Cell>> board;
+  int bombs_count;
+  int closed_cells_count;
 
 public:
   int rows;
   int cols;
   bool game_over;
-  int bombs_count;
   Coordinates cursor;
 
   Minesweeper(int r, int c)
-      : rows(r), cols(c), game_over(false), bombs_count(9), cursor(0, 0) {}
+      : rows(r), cols(c), game_over(false), bombs_count(9),
+        closed_cells_count(c * r), cursor(0, 0) {}
 
   void init() {
     game_over = true;
@@ -300,11 +302,17 @@ public:
   void open(int row, int col) {
     auto &cell = board[row][col];
 
-    if (cell.is_open) {
+    if (cell.is_open || cell.is_flagged) {
+      return;
+    }
+
+    // You won already
+    if (closed_cells_count == bombs_count) {
       return;
     }
 
     cell.is_open = true;
+    closed_cells_count -= 1;
 
     if (cell.has_bomb) {
       cout << "You lost"
