@@ -135,76 +135,14 @@ public:
     return coordinates;
   };
 
-  // TODO: Quite a verbose method, find a way to make it more laconic
   void plantHints(int row, int col) {
-    if (row == 0) { // if first row
-      if (col == 0) {
-        board[row][col + 1].bombs_around += 1; // check same row
+    vector<tuple<int, int>> neighbors = getNeighbors(row, col);
 
-        board[row + 1][col].bombs_around += 1; // check row below
-        board[row + 1][col + 1].bombs_around += 1;
-      } else if (col == cols - 1) {
-        board[row][col - 1].bombs_around += 1; // check same row
+    for (const auto neighbor : neighbors) {
+      int neighbor_row = get<0>(neighbor);
+      int neighbor_col = get<1>(neighbor);
 
-        board[row + 1][col].bombs_around += 1; // check row below
-        board[row + 1][col - 1].bombs_around += 1;
-      } else {
-        board[row][col + 1].bombs_around += 1; // check same row
-        board[row][col - 1].bombs_around += 1;
-
-        board[row + 1][col + 1].bombs_around += 1; // check row below
-        board[row + 1][col].bombs_around += 1;
-        board[row + 1][col - 1].bombs_around += 1;
-      }
-    } else if (row == rows - 1) { // if last row
-      if (col == 0) {
-        board[row][col + 1].bombs_around += 1; // check same row
-
-        board[row - 1][col].bombs_around += 1; // check row above
-        board[row - 1][col + 1].bombs_around += 1;
-      } else if (col == cols - 1) {
-        board[row][col - 1].bombs_around += 1; // check same row
-
-        board[row - 1][col].bombs_around += 1; // check row above
-        board[row - 1][col - 1].bombs_around += 1;
-      } else {
-        board[row][col + 1].bombs_around += 1; // check same row
-        board[row][col - 1].bombs_around += 1;
-
-        board[row - 1][col + 1].bombs_around += 1; // check row above
-        board[row - 1][col].bombs_around += 1;
-        board[row - 1][col - 1].bombs_around += 1;
-      }
-    } else { // any other row
-      if (col == 0) {
-        board[row][col + 1].bombs_around += 1; // check same row
-
-        board[row - 1][col].bombs_around += 1; // check row above
-        board[row - 1][col + 1].bombs_around += 1;
-
-        board[row + 1][col].bombs_around += 1; // check row below
-        board[row + 1][col + 1].bombs_around += 1;
-
-      } else if (col == cols - 1) {
-        board[row][col - 1].bombs_around += 1; // check same row
-                                               //
-        board[row - 1][col].bombs_around += 1; // check row above
-        board[row - 1][col - 1].bombs_around += 1;
-
-        board[row + 1][col].bombs_around += 1; // check row below
-        board[row + 1][col - 1].bombs_around += 1;
-      } else {
-        board[row][col + 1].bombs_around += 1; // check same row
-        board[row][col - 1].bombs_around += 1;
-
-        board[row - 1][col + 1].bombs_around += 1; // check row above
-        board[row - 1][col].bombs_around += 1;
-        board[row - 1][col - 1].bombs_around += 1;
-
-        board[row + 1][col + 1].bombs_around += 1; // check row below
-        board[row + 1][col].bombs_around += 1;
-        board[row + 1][col - 1].bombs_around += 1;
-      }
+      board[neighbor_row][neighbor_col].bombs_around += 1;
     }
   }
 
@@ -413,6 +351,10 @@ int main() {
       mnswpr.open(mnswpr.cursor.row, mnswpr.cursor.col);
     } else if (move == 'f') {
       mnswpr.flag(mnswpr.cursor.row, mnswpr.cursor.col);
+    } else if (move == '0') {
+      mnswpr.cursor.change(mnswpr.cursor.row, 0);
+    } else if (move == '$') {
+      mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cols - 1);
     } else {
       cout << "no such button supported"
            << "\n";
