@@ -297,21 +297,23 @@ public:
     return neighbors;
   };
 
-  void open(int r, int c) {
-    if (board[r][c].is_open) {
+  void open(int row, int col) {
+    auto &cell = board[row][col];
+
+    if (cell.is_open) {
       return;
     }
 
-    board[r][c].is_open = true;
+    cell.is_open = true;
 
-    if (board[r][c].has_bomb) {
+    if (cell.has_bomb) {
       cout << "You lost"
            << "\n";
       return;
     }
 
-    if (!board[r][c].bombs_around) {
-      vector<tuple<int, int>> neighbors = getNeighbors(r, c);
+    if (!cell.bombs_around) {
+      vector<tuple<int, int>> neighbors = getNeighbors(row, col);
 
       for (const auto neighbor : neighbors) {
         int neighbor_row = get<0>(neighbor);
