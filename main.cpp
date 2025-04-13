@@ -25,6 +25,8 @@ const std::string reset = "\033[0m";
 
 using namespace std;
 
+void clearScreen() { std::cout << "\033[2J\033[H"; }
+
 class Coordinates {
 public:
   int row;
@@ -221,6 +223,7 @@ public:
   }
 
   void renderBoard() {
+    clearScreen();
     cout << "+-------------------+"
          << "\n";
 
@@ -357,10 +360,6 @@ public:
   };
 
   void open(int r, int c) {
-    cout << "r and c: " << r << c << "\n";
-    if (r < 0 || r >= rows || c < 0 || c >= cols)
-      return;
-
     if (board[r][c].is_open) {
       return;
     }
@@ -381,6 +380,8 @@ public:
         int neighbor_col = get<1>(neighbor);
 
         open(neighbor_row, neighbor_col);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        renderBoard();
       }
     }
   }
@@ -399,7 +400,7 @@ int main() {
 
   while (true) {
     cin >> move;
-    cout << "your move was" << move << "\n";
+    cout << "move: " << move << "\n";
     if (move == 'h') {
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cursor.col - 1);
     } else if (move == 'l') {
