@@ -327,7 +327,7 @@ public:
   }
 
   void flag(int row, int col) {
-    auto cell = board[row][col];
+    auto &cell = board[row][col];
     cell.is_flagged = !cell.is_flagged;
   }
 };
