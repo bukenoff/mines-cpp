@@ -162,6 +162,21 @@ public:
     }
   }
 
+  void printInstructions() {
+    cout << "k - move up"
+         << "\n";
+    cout << "j - move down"
+         << "\n";
+    cout << "h - move left"
+         << "\n";
+    cout << "l - move right"
+         << "\n";
+    cout << "o - open cell"
+         << "\n";
+    cout << "f - put flag"
+         << "\n";
+  }
+
   void renderBoard() {
     clearScreen();
     cout << "+-------------------+"
@@ -203,6 +218,7 @@ public:
 
     cout << "+-------------------+"
          << "\n";
+    printInstructions();
   };
 
   void renderFactualBoard() {
