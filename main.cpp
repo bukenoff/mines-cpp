@@ -2,7 +2,9 @@
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
+#include <map>
 #include <set>
+#include <stdlib.h>
 #include <thread>
 #include <tuple>
 #include <vector>
@@ -13,17 +15,28 @@ using namespace std::chrono;      // nanoseconds, system_clock, seconds
 // Colors for later usage
 // ANSI escape codes for colors
 /*const std::string red = "\033[31m";*/
-/*const std::string green = "\033[32m";*/
 /*const std::string reset = "\033[0m";*/
 /**/
 /*std::cout << red << "This text is red." << reset << std::endl;*/
-/*std::cout << green << "This text is green." << reset << std::endl;*/
 /**/
 
+const std::string black = "\033[30m";
+const std::string white = "\033[37m";
+const std::string green = "\033[32m";
+const std::string blue = "\033[34m";
 const std::string red = "\033[31m";
+const std::string yellow = "\033[33m";
+const std::string magenta = "\033[35m";
+const std::string cyan = "\033[36m";
 const std::string reset = "\033[0m";
+const std::string bold = "\033[1m";
 
 using namespace std;
+
+map<int, string> value_colors = {
+    {1, blue},    {2, green}, {3, red},   {4, yellow},
+    {5, magenta}, {6, cyan},  {7, black}, {8, white},
+};
 
 void clearScreen() { std::cout << "\033[2J\033[H"; }
 
@@ -59,6 +72,13 @@ public:
   }
 };
 
+enum Status {
+  Pending,
+  Active,
+  Loss,
+  Victory,
+};
+
 class Minesweeper {
   vector<vector<Cell>> board;
   int bombs_count;
@@ -69,10 +89,11 @@ public:
   int cols;
   bool game_over;
   Coordinates cursor;
+  Status status;
 
   Minesweeper(int r, int c)
       : rows(r), cols(c), game_over(false), bombs_count(9),
-        closed_cells_count(c * r), cursor(0, 0) {}
+        closed_cells_count(c * r), cursor(0, 0), status(Pending) {}
 
   void init() {
     game_over = true;
@@ -190,13 +211,17 @@ public:
         }
 
         if (cell.row == cursor.row && cell.col == cursor.col) {
-          cout << red;
+          cout << bold;
+        }
+        if (status == Victory) {
+          cout << green;
         }
 
         if (cell.is_open) {
           if (cell.has_bomb) {
             cout << "b";
           } else if (cell.bombs_around) {
+            cout << value_colors[cell.bombs_around];
             cout << cell.bombs_around;
           } else {
             cout << " ";
@@ -316,19 +341,23 @@ public:
   };
 
   void open(int row, int col) {
+    // You won already
+    if (closed_cells_count == bombs_count) {
+      return;
+    }
     auto &cell = board[row][col];
 
     if (cell.is_open || cell.is_flagged) {
       return;
     }
 
-    // You won already
-    if (closed_cells_count == bombs_count) {
-      return;
-    }
-
     cell.is_open = true;
     closed_cells_count -= 1;
+
+    if (closed_cells_count == bombs_count) {
+      status = Victory;
+      return;
+    }
 
     if (cell.has_bomb) {
       cout << "You lost"
@@ -358,6 +387,7 @@ public:
 
 int main() {
   Minesweeper mnswpr(9, 9);
+  system("Color E4");
   mnswpr.init();
   char move;
   mnswpr.start(0);
