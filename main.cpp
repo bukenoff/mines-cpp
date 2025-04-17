@@ -246,36 +246,6 @@ public:
     printInstructions();
   };
 
-  void renderFactualBoard() {
-    cout << "+-------------------+"
-         << "\n";
-
-    for (const auto &row : board) {
-      for (const auto &cell : row) {
-        if (cell.col == 0) {
-          cout << "| ";
-        }
-
-        if (cell.has_bomb) {
-          cout << "×";
-        } else if (cell.bombs_around) {
-          cout << cell.bombs_around;
-        } else {
-          cout << " ";
-        }
-        cout << " ";
-
-        if (cell.col == cols - 1) {
-          cout << "|";
-        }
-      }
-      cout << "\n";
-    }
-
-    cout << "+-------------------+"
-         << "\n";
-  };
-
   vector<tuple<int, int>> getNeighbors(int row, int col) {
     vector<tuple<int, int>> neighbors;
     neighbors.reserve(8);
@@ -387,7 +357,6 @@ public:
 
 int main() {
   Minesweeper mnswpr(9, 9);
-  system("Color E4");
   mnswpr.init();
   char move;
   mnswpr.start(0);
