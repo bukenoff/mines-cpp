@@ -103,6 +103,7 @@ public:
 
   void start(int start_coordinates) {
     game_over = false;
+    status = Active;
     plantBombs(start_coordinates);
     renderBoard();
   }
@@ -243,6 +244,40 @@ public:
 
     cout << "+-------------------+"
          << "\n";
+    if (status == Victory) {
+      cout << " ||||| "
+           << "\n";
+      cout << "|o   o|"
+           << "\n";
+      cout << "|  l  |"
+           << "\n";
+      cout << "| \\_/ |"
+           << "\n";
+      cout << " ----- "
+           << "\n";
+    } else if (status == Loss) {
+      cout << " ||||| "
+           << "\n";
+      cout << "|o   o|"
+           << "\n";
+      cout << "|  l  |"
+           << "\n";
+      cout << "|  ︵ |"
+           << "\n";
+      cout << " ----- "
+           << "\n";
+    } else {
+      cout << " ||||| "
+           << "\n";
+      cout << "|o   o|"
+           << "\n";
+      cout << "|  l  |"
+           << "\n";
+      cout << "| ___ |"
+           << "\n";
+      cout << " ----- "
+           << "\n";
+    }
     printInstructions();
   };
 
@@ -330,6 +365,7 @@ public:
     }
 
     if (cell.has_bomb) {
+      status = Loss;
       cout << "You lost"
            << "\n";
       return;
@@ -363,24 +399,32 @@ int main() {
 
   while (true) {
     cin >> move;
-    cout << "move: " << move << "\n";
-    if (move == 'h') {
+    switch (move) {
+    case 'h':
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cursor.col - 1);
-    } else if (move == 'l') {
+      break;
+    case 'l':
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cursor.col + 1);
-    } else if (move == 'j') {
+      break;
+    case 'j':
       mnswpr.cursor.change(mnswpr.cursor.row + 1, mnswpr.cursor.col);
-    } else if (move == 'k') {
+      break;
+    case 'k':
       mnswpr.cursor.change(mnswpr.cursor.row - 1, mnswpr.cursor.col);
-    } else if (move == 'o') {
+      break;
+    case 'o':
       mnswpr.open(mnswpr.cursor.row, mnswpr.cursor.col);
-    } else if (move == 'f') {
+      break;
+    case 'f':
       mnswpr.flag(mnswpr.cursor.row, mnswpr.cursor.col);
-    } else if (move == '0') {
+      break;
+    case '0':
       mnswpr.cursor.change(mnswpr.cursor.row, 0);
-    } else if (move == '$') {
+      break;
+    case '$':
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cols - 1);
-    } else {
+      break;
+    default:
       cout << "no such button supported"
            << "\n";
     }
