@@ -243,40 +243,17 @@ public:
     }
 
     cout << "+-------------------+"
-         << "\n";
+         << "\n\n";
+
     if (status == Victory) {
-      cout << " ||||| "
-           << "\n";
-      cout << "|o   o|"
-           << "\n";
-      cout << "|  l  |"
-           << "\n";
-      cout << "| \\_/ |"
-           << "\n";
-      cout << " ----- "
-           << "\n";
+      cout << "(˶ᵔ ᵕ ᵔ˶)"
+           << "\n\n";
     } else if (status == Loss) {
-      cout << " ||||| "
-           << "\n";
-      cout << "|o   o|"
-           << "\n";
-      cout << "|  l  |"
-           << "\n";
-      cout << "|  ︵ |"
-           << "\n";
-      cout << " ----- "
-           << "\n";
+      cout << "(´•︵•`)"
+           << "\n\n";
     } else {
-      cout << " ||||| "
-           << "\n";
-      cout << "|o   o|"
-           << "\n";
-      cout << "|  l  |"
-           << "\n";
-      cout << "| ___ |"
-           << "\n";
-      cout << " ----- "
-           << "\n";
+      cout << "( • _ • )"
+           << "\n\n";
     }
     printInstructions();
   };
