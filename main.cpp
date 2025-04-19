@@ -205,9 +205,6 @@ public:
         if (cell.row == cursor.row && cell.col == cursor.col) {
           cout << bold;
         }
-        if (status == Victory) {
-          cout << green;
-        }
 
         if (cell.is_open) {
           if (cell.has_bomb) {
@@ -369,7 +366,6 @@ int main() {
   Minesweeper mnswpr(9, 9);
   mnswpr.init();
   char move;
-  mnswpr.start(0);
 
   while (true) {
     cin >> move;
@@ -387,6 +383,10 @@ int main() {
       mnswpr.cursor.change(mnswpr.cursor.row - 1, mnswpr.cursor.col);
       break;
     case 'o':
+      if (mnswpr.status == Pending) {
+        int start_point = mnswpr.cursor.row * mnswpr.rows + mnswpr.cursor.col;
+        mnswpr.start(start_point);
+      }
       mnswpr.open(mnswpr.cursor.row, mnswpr.cursor.col);
       break;
     case 'f':
