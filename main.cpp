@@ -152,10 +152,6 @@ public:
       }
     }
 
-    for (int num : coordinates) {
-      cout << "number is: " << num << "\n";
-    }
-
     return coordinates;
   };
 
