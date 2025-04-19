@@ -62,14 +62,9 @@ public:
   bool is_open;
   bool is_flagged;
 
-  Cell(int r, int c) {
-    row = r;
-    col = c;
-    bombs_around = 0;
-    has_bomb = false;
-    is_open = false;
-    is_flagged = false;
-  }
+  Cell(int r, int c)
+      : row(r), col(c), bombs_around(0), has_bomb(false), is_open(false),
+        is_flagged(false) {}
 };
 
 enum Status {
@@ -242,12 +237,18 @@ public:
          << "\n\n";
 
     if (status == Victory) {
+      cout << "You won, congrats"
+           << "\n";
       cout << "(˶ᵔ ᵕ ᵔ˶)"
            << "\n\n";
     } else if (status == Loss) {
+      cout << "You lost"
+           << "\n";
       cout << "(´•︵•`)"
            << "\n\n";
     } else {
+      cout << "Keep playing"
+           << "\n";
       cout << "( • _ • )"
            << "\n\n";
     }
