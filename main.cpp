@@ -9,16 +9,8 @@
 #include <tuple>
 #include <vector>
 
-using namespace std::this_thread; // sleep_for, sleep_until
-using namespace std::chrono;      // nanoseconds, system_clock, seconds
-
-// Colors for later usage
-// ANSI escape codes for colors
-/*const std::string red = "\033[31m";*/
-/*const std::string reset = "\033[0m";*/
-/**/
-/*std::cout << red << "This text is red." << reset << std::endl;*/
-/**/
+using namespace std::this_thread;
+using namespace std::chrono;
 
 const std::string black = "\033[30m";
 const std::string white = "\033[37m";
@@ -371,18 +363,33 @@ int main() {
     cin >> move;
     switch (move) {
     case 'h':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cursor.col - 1);
       break;
     case 'l':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cursor.col + 1);
       break;
     case 'j':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       mnswpr.cursor.change(mnswpr.cursor.row + 1, mnswpr.cursor.col);
       break;
     case 'k':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       mnswpr.cursor.change(mnswpr.cursor.row - 1, mnswpr.cursor.col);
       break;
     case 'o':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       if (mnswpr.status == Pending) {
         int start_point = mnswpr.cursor.row * mnswpr.rows + mnswpr.cursor.col;
         mnswpr.start(start_point);
@@ -390,12 +397,21 @@ int main() {
       mnswpr.open(mnswpr.cursor.row, mnswpr.cursor.col);
       break;
     case 'f':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       mnswpr.flag(mnswpr.cursor.row, mnswpr.cursor.col);
       break;
     case '0':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       mnswpr.cursor.change(mnswpr.cursor.row, 0);
       break;
     case '$':
+      if (mnswpr.status == Loss || mnswpr.status == Victory) {
+        break;
+      }
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cols - 1);
       break;
     default:
