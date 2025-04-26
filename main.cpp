@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <map>
@@ -168,24 +169,17 @@ public:
   }
 
   void printInstructions() {
-    cout << "k - move up"
-         << "\n";
-    cout << "j - move down"
-         << "\n";
-    cout << "h - move left"
-         << "\n";
-    cout << "l - move right"
-         << "\n";
-    cout << "o - open cell"
-         << "\n";
-    cout << "f - put flag"
-         << "\n";
+    cout << "k - move up\n";
+    cout << "j - move down\n";
+    cout << "h - move left\n";
+    cout << "l - move right\n";
+    cout << "o - open cell\n";
+    cout << "f - put flag\n";
   }
 
   void renderBoard() {
     clearScreen();
-    cout << "+-------------------+"
-         << "\n";
+    cout << "+-------------------+\n";
 
     for (const auto &row : board) {
       for (const auto &cell : row) {
@@ -222,24 +216,17 @@ public:
       cout << "\n";
     }
 
-    cout << "+-------------------+"
-         << "\n\n";
+    cout << "+-------------------+\n\n";
 
     if (status == Victory) {
-      cout << "You won, congrats"
-           << "\n";
-      cout << "(˶ᵔ ᵕ ᵔ˶)"
-           << "\n\n";
+      cout << "You won, congrats\n";
+      cout << "(˶ᵔ ᵕ ᵔ˶)\n";
     } else if (status == Loss) {
-      cout << "You lost"
-           << "\n";
-      cout << "(´•︵•`)"
-           << "\n\n";
+      cout << "You lost\n";
+      cout << "(´•︵•`)\n";
     } else {
-      cout << "Keep playing"
-           << "\n";
-      cout << "( • _ • )"
-           << "\n\n";
+      cout << "Keep playing\n";
+      cout << "( • _ • )\n\n";
     }
     printInstructions();
   };
@@ -320,17 +307,17 @@ public:
     }
 
     cell.is_open = true;
+
+    if (cell.has_bomb) {
+      status = Loss;
+      cout << "You lost\n";
+      return;
+    }
+
     closed_cells_count -= 1;
 
     if (closed_cells_count == bombs_count) {
       status = Victory;
-      return;
-    }
-
-    if (cell.has_bomb) {
-      status = Loss;
-      cout << "You lost"
-           << "\n";
       return;
     }
 
@@ -415,8 +402,7 @@ int main() {
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cols - 1);
       break;
     default:
-      cout << "no such button supported"
-           << "\n";
+      cout << "no such button supported\n";
     }
     mnswpr.renderBoard();
   }
