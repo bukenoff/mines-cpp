@@ -1,11 +1,14 @@
 #include <algorithm>
+#include <charconv>
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <map>
+#include <ncurses.h>
 #include <set>
 #include <stdlib.h>
+#include <string>
 #include <thread>
 #include <tuple>
 #include <vector>
@@ -31,7 +34,8 @@ map<int, string> value_colors = {
     {5, magenta}, {6, cyan},  {7, black}, {8, white},
 };
 
-void clearScreen() { std::cout << "\033[2J\033[H"; }
+void clearScreen() { /*std::cout << "\033[2J\033[H"; */
+}
 
 class Coordinates {
 public:
@@ -169,64 +173,62 @@ public:
   }
 
   void printInstructions() {
-    cout << "k - move up\n";
-    cout << "j - move down\n";
-    cout << "h - move left\n";
-    cout << "l - move right\n";
-    cout << "o - open cell\n";
-    cout << "f - put flag\n";
+    mvprintw(14, 0, "k - move up\n");
+    mvprintw(15, 0, "j - move down\n");
+    mvprintw(16, 0, "h - move left\n");
+    mvprintw(17, 0, "l - move right\n");
+    mvprintw(18, 0, "o - open cell\n");
+    mvprintw(19, 0, "f - put flag\n");
   }
 
   void renderBoard() {
     clearScreen();
-    cout << "+-------------------+\n";
+    mvprintw(0, 0, "+-------------------+\n");
 
     for (const auto &row : board) {
       for (const auto &cell : row) {
-
         if (cell.col == 0) {
-          cout << "| ";
+          mvprintw(cell.row + 1, cell.col, "| ");
         }
 
         if (cell.row == cursor.row && cell.col == cursor.col) {
-          cout << bold;
+          attron(A_BOLD);
         }
 
         if (cell.is_open) {
           if (cell.has_bomb) {
-            cout << "b";
+            mvprintw(cell.row + 1, cell.col * 2 + 1, "b");
           } else if (cell.bombs_around) {
-            cout << value_colors[cell.bombs_around];
-            cout << cell.bombs_around;
+            mvprintw(cell.row + 1, cell.col * 2 + 1, "%d", cell.bombs_around);
           } else {
-            cout << " ";
+            mvprintw(cell.row + 1, cell.col * 2 + 1, " ");
           }
         } else if (cell.is_flagged) {
-          cout << "f";
+          mvprintw(cell.row + 1, cell.col * 2 + 1, "f");
         } else {
-          cout << "~";
+          mvprintw(cell.row + 1, cell.col * 2 + 1, "~");
         }
 
-        cout << " ";
-        cout << reset;
+        /*cout << reset;*/
         if (cell.col == cols - 1) {
-          cout << "|";
+          mvprintw(cell.row + 1, cell.col * 2 + 2, "|\n");
         }
+
+        attroff(A_BOLD);
       }
-      cout << "\n";
     }
 
-    cout << "+-------------------+\n\n";
+    mvprintw(10, 0, "+-------------------+\n\n");
 
     if (status == Victory) {
-      cout << "You won, congrats\n";
-      cout << "(˶ᵔ ᵕ ᵔ˶)\n";
+      mvprintw(11, 0, "You won, congrats\n");
+      mvprintw(12, 0, "(˶ᵔ ᵕ ᵔ˶)\n");
     } else if (status == Loss) {
-      cout << "You lost\n";
-      cout << "(´•︵•`)\n";
+      mvprintw(11, 0, "You lost\n");
+      mvprintw(12, 0, "(´•︵•`)\n");
     } else {
-      cout << "Keep playing\n";
-      cout << "( • _ • )\n\n";
+      mvprintw(11, 0, "Keep playing\n");
+      mvprintw(12, 0, "( • _ • )\n\n");
     }
     printInstructions();
   };
@@ -310,7 +312,7 @@ public:
 
     if (cell.has_bomb) {
       status = Loss;
-      cout << "You lost\n";
+      mvprintw(20, 0, "You lost\n");
       return;
     }
 
@@ -342,13 +344,22 @@ public:
 };
 
 int main() {
+  initscr();
+  cbreak();
+  noecho();
+  keypad(stdscr, TRUE);
+  curs_set(0);
+
   Minesweeper mnswpr(9, 9);
   mnswpr.init();
-  char move;
+
+  const std::chrono::milliseconds target_frame_duration(1000 / 60);
 
   while (true) {
-    cin >> move;
-    switch (move) {
+    int key = getch();
+    auto frame_start_time = std::chrono::steady_clock::now();
+
+    switch (key) {
     case 'h':
       if (mnswpr.status == Loss || mnswpr.status == Victory) {
         break;
@@ -402,10 +413,22 @@ int main() {
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cols - 1);
       break;
     default:
-      cout << "no such button supported\n";
+      mvprintw(22, 0, "no such button supported\n");
     }
+
+    refresh();
     mnswpr.renderBoard();
+    // --- Timing (continued) ---
+    auto frame_end_time = std::chrono::steady_clock::now();
+    auto frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+        frame_end_time - frame_start_time);
+
+    if (frame_duration < target_frame_duration) {
+      std::this_thread::sleep_for(target_frame_duration - frame_duration);
+    }
   }
+
+  endwin();
 
   return 0;
 }
