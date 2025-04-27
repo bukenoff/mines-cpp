@@ -38,12 +38,15 @@ class Coordinates {
 public:
   int row;
   int col;
+  int max_row;
+  int max_col;
 
-  Coordinates(int r, int c) : row(r), col(c) {}
+  Coordinates(int r, int c, int max_r, int max_c)
+      : row(r), col(c), max_row(max_r), max_col(max_c) {}
 
   void change(int r, int c) {
-    row = (r < 0 ? 0 : r % 9);
-    col = (c < 0 ? 0 : c % 9);
+    row = (r < 0 ? 0 : r % max_row);
+    col = (c < 0 ? 0 : c % max_col);
   }
 };
 
@@ -80,9 +83,9 @@ public:
   Coordinates cursor;
   Status status;
 
-  Minesweeper(int r, int c)
-      : rows(r), cols(c), game_over(false), bombs_count(9),
-        closed_cells_count(c * r), cursor(0, 0), status(Pending) {}
+  Minesweeper(int r, int c, int b)
+      : rows(r), cols(c), game_over(false), bombs_count(b),
+        closed_cells_count(c * r), cursor(0, 0, r, c), status(Pending) {}
 
   void init() {
     game_over = true;
@@ -347,7 +350,35 @@ int main() {
   keypad(stdscr, TRUE);
   curs_set(0);
 
-  Minesweeper mnswpr(9, 9);
+  char difficulty;
+  int rows;
+  int cols;
+  int bombs;
+
+  while (true) {
+    cout << "Choose difficulty(e - easy, m - medium, h - hard)\n";
+    cin >> difficulty;
+
+    if (difficulty == 'm') {
+      rows = 16;
+      cols = 16;
+      bombs = 40;
+      break;
+    } else if (difficulty == 'h') {
+      rows = 30;
+      cols = 16;
+      bombs = 99;
+      break;
+    } else {
+      rows = 9;
+      cols = 9;
+      bombs = 10;
+
+      break;
+    }
+  }
+
+  Minesweeper mnswpr(rows, cols, bombs);
   mnswpr.init();
 
   const std::chrono::milliseconds target_frame_duration(1000 / 60);
