@@ -329,7 +329,6 @@ public:
         int neighbor_col = get<1>(neighbor);
 
         open(neighbor_row, neighbor_col);
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
         renderBoard();
       }
     }
@@ -410,6 +409,9 @@ int main() {
       }
       mnswpr.cursor.change(mnswpr.cursor.row, mnswpr.cols - 1);
       break;
+    case 'q':
+      endwin();
+      return 0;
     default:
       mvprintw(22, 0, "no such button supported\n");
     }
