@@ -34,9 +34,6 @@ map<int, string> value_colors = {
     {5, magenta}, {6, cyan},  {7, black}, {8, white},
 };
 
-void clearScreen() { /*std::cout << "\033[2J\033[H"; */
-}
-
 class Coordinates {
 public:
   int row;
@@ -182,39 +179,40 @@ public:
   }
 
   void renderBoard() {
-    clearScreen();
     mvprintw(0, 0, "+-------------------+\n");
 
     for (const auto &row : board) {
       for (const auto &cell : row) {
+        int curr_row = cell.row + 1;
+        int curr_col = cell.col * 2 + 2;
+
         if (cell.col == 0) {
           mvprintw(cell.row + 1, cell.col, "| ");
         }
 
         if (cell.row == cursor.row && cell.col == cursor.col) {
-          attron(A_BOLD);
+          attron(A_UNDERLINE);
         }
 
         if (cell.is_open) {
           if (cell.has_bomb) {
-            mvprintw(cell.row + 1, cell.col * 2 + 1, "b");
+            mvprintw(curr_row, curr_col, "b");
           } else if (cell.bombs_around) {
-            mvprintw(cell.row + 1, cell.col * 2 + 1, "%d", cell.bombs_around);
+            mvprintw(curr_row, curr_col, "%d", cell.bombs_around);
           } else {
-            mvprintw(cell.row + 1, cell.col * 2 + 1, " ");
+            mvprintw(curr_row, curr_col, " ");
           }
         } else if (cell.is_flagged) {
-          mvprintw(cell.row + 1, cell.col * 2 + 1, "f");
+          mvprintw(curr_row, curr_col, "f");
         } else {
-          mvprintw(cell.row + 1, cell.col * 2 + 1, "~");
+          mvprintw(curr_row, curr_col, "~");
         }
 
-        /*cout << reset;*/
+        attroff(A_UNDERLINE);
+
         if (cell.col == cols - 1) {
-          mvprintw(cell.row + 1, cell.col * 2 + 2, "|\n");
+          mvprintw(curr_row, curr_col + 2, "|\n");
         }
-
-        attroff(A_BOLD);
       }
     }
 
