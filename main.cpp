@@ -65,8 +65,10 @@ public:
 };
 
 enum Status {
+
   Pending,
   Active,
+
   Loss,
   Victory,
 };
@@ -88,6 +90,7 @@ public:
         closed_cells_count(c * r), cursor(0, 0, r, c), status(Pending) {}
 
   void init() {
+
     game_over = true;
     makeEmptyBoard();
     renderBoard();
@@ -201,14 +204,18 @@ public:
           if (cell.has_bomb) {
             mvprintw(curr_row, curr_col, "b");
           } else if (cell.bombs_around) {
+            attron(COLOR_PAIR(cell.bombs_around));
             mvprintw(curr_row, curr_col, "%d", cell.bombs_around);
+            attroff(COLOR_PAIR(cell.bombs_around));
           } else {
             mvprintw(curr_row, curr_col, " ");
           }
         } else if (cell.is_flagged) {
           mvprintw(curr_row, curr_col, "f");
         } else {
+          /*attron(COLOR_PAIR(9));*/
           mvprintw(curr_row, curr_col, "~");
+          /*attroff(COLOR_PAIR(9));*/
         }
 
         attroff(A_UNDERLINE);
@@ -345,6 +352,20 @@ public:
 
 int main() {
   initscr();
+  use_default_colors();
+  start_color();
+
+  init_pair(1, COLOR_WHITE, -1);
+  init_pair(2, COLOR_CYAN, -1);
+  init_pair(3, COLOR_MAGENTA, -1);
+  init_pair(4, COLOR_BLUE, -1);
+  init_pair(5, COLOR_YELLOW, -1);
+  init_pair(6, COLOR_GREEN, -1);
+  init_pair(7, COLOR_RED, -1);
+  init_pair(8, COLOR_BLACK, -1);
+
+  /*init_pair(9, COLOR_WHITE, -1);*/
+
   cbreak();
   noecho();
   keypad(stdscr, TRUE);
