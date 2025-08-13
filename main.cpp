@@ -65,10 +65,8 @@ public:
 };
 
 enum Status {
-
   Pending,
   Active,
-
   Loss,
   Victory,
 };
@@ -90,7 +88,6 @@ public:
         closed_cells_count(c * r), cursor(0, 0, r, c), status(Pending) {}
 
   void init() {
-
     game_over = true;
     makeEmptyBoard();
     renderBoard();
@@ -185,7 +182,13 @@ public:
   }
 
   void renderBoard() {
-    mvprintw(0, 0, "+-------------------+\n");
+    string line = "";
+    line += "+";
+    for (int i = 0; i < cols * 2 + 1; i++) {
+      line += "-";
+    }
+    line += "+\n";
+    mvprintw(0, 0, line.c_str());
 
     for (const auto &row : board) {
       for (const auto &cell : row) {
@@ -226,7 +229,7 @@ public:
       }
     }
 
-    mvprintw(10, 0, "+-------------------+\n\n");
+    mvprintw(10, 0, line.c_str());
 
     if (status == Victory) {
       mvprintw(11, 0, "You won, congrats\n");
